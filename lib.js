@@ -3,7 +3,7 @@ const axios = require('axios');
 const fs = require('fs').promises;
 
 const fetchData = async () => {
-  const url = 'https://data.bmkg.go.id/autogempa.xml';
+  const url = 'https://data.bmkg.go.id/DataMKG/TEWS/autogempa.xml';
   const res = await axios.get(url);
 
   return res.data;
