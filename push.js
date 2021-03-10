@@ -2,7 +2,7 @@ const webpush = require("web-push");
 const redis = require("redis");
 const { promisify } = require("util");
 
-const { publicKey, privateKey } = require("./config/vapid_keys.json");
+// const { publicKey, privateKey } = require("./config/vapid_keys.json");
 const client = redis.createClient();
 const getAsync = promisify(client.get).bind(client);
 const delAsync = promisify(client.del).bind(client);

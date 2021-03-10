@@ -13,10 +13,10 @@ const write = async () => {
     const data = { ...keys, created_at: new Date(Date.now()).toUTCString() };
     await setAsync("public_key", data.publicKey);
     await setAsync("private_key", data.privateKey);
-    await fs.writeFile(
-      `${curDir}/vapid_keys.json`,
-      JSON.stringify(data, null, 2)
-    );
+    // await fs.writeFile(
+      // `${curDir}/vapid_keys.json`,
+      // JSON.stringify(data, null, 2)
+    // );
     console.log("ok");
   } catch (e) {
     console.log(e);
