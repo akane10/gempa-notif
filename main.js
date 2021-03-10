@@ -1,6 +1,6 @@
 const parser = require('fast-xml-parser');
 const { fetchData, options, readLast, writeLast } = require('./lib');
-const { notif } = require('./firebase');
+const { notif } = require('./push');
 
 let lastDate = '';
 let lastTime = '';
