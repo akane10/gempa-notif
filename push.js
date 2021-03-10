@@ -1,35 +1,68 @@
 const webpush = require("web-push");
+const redis = require("redis");
+const { promisify } = require("util");
+
 const { publicKey, privateKey } = require("./config/vapid_keys.json");
+const client = redis.createClient();
+const getAsync = promisify(client.get).bind(client);
+const delAsync = promisify(client.del).bind(client);
+const keysAsync = promisify(client.keys).bind(client);
 
-const pushSubscription = {
-  endpoint:
-    "https://fcm.googleapis.com/fcm/send/dBQb2e_0-Io:APA91bFTrsip6C6Pk3RPmsQvzG3jS1qCTG7EYLDbImx2gzp6P7XK5BcvskmNL4AL4saX-rTSyxViY7-eB-HHwlmrlRcoKwuzG17UdyO0vucLkRu5bb1s8Ls1sRENMxwCfBV5AP1-OF_O",
-  keys: {
-    p256dh:
-      "BPbjeYHsAAVuniwlQmwqmITnXBzoFkVGe7sYcwec+RCnTlAoBbr6y/GiKoNE5SqyX+aBZLdgxpdQhsUcMWVFKzg=",
-    auth: "5rBvidms489chB/D94AqAA==",
-  },
-};
+function safelyParseJSON(json) {
+  let parsed;
 
-const options = {
-  vapidDetails: {
-    subject: "mailto:example_email@example.com",
-    publicKey,
-    privateKey,
-  },
-  TTL: 60,
-};
+  try {
+    parsed = JSON.parse(json);
+  } catch (e) {
+    return null;
+  }
+
+  return parsed; // Could be undefined!
+}
 
 async function notif(msg) {
   try {
-    const x = await webpush.sendNotification(pushSubscription, msg, options);
+    const keys = await keysAsync("*");
+    for (let index = 0; index < keys.length; index++) {
+      const key = keys[index];
+      const val = await getAsync(key);
+
+      const x = safelyParseJSON(val);
+      console.log({ x });
+      if (x && x.endpoint) {
+        const pushSubscription = {
+          endpoint: x.endpoint,
+          keys: {
+            p256dh: x.p256dh,
+            auth: x.auth,
+          },
+        };
+
+        const options = {
+          vapidDetails: {
+            subject: "mailto:example_email@example.com",
+            publicKey: await getAsync("public_key"),
+            privateKey: await getAsync("private_key"),
+          },
+          TTL: 60,
+        };
+        await webpush
+          .sendNotification(pushSubscription, msg, options)
+          .catch((e) => {
+            console.log("sendNotification errrr!!! ", e);
+            const { statusCode, endpoint } = e;
+            if (statusCode == 410) {
+              delAsync(key);
+            } else {
+              throw new Error(e);
+            }
+          });
+        console.log("pushed", x.endpoint);
+      }
+    }
   } catch (e) {
     console.log("push errrr!!! ", e);
-    const { statusCode, endpoint } = e;
-    if (statusCode == 410) {
-      // TODO: Delete endpoint in db
-      console.log("delete endpoint");
-    }
+    throw new Error(e);
   }
 }
 
