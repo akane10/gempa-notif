@@ -3,11 +3,11 @@ const { publicKey, privateKey } = require("./config/vapid_keys.json");
 
 const pushSubscription = {
   endpoint:
-    "https://fcm.googleapis.com/fcm/send/dME_c-O91wI:APA91bEblegBXI1Pkblr_s64AtASHcSxt61nG44LzYl1OfVL1mKJy4HaJ1jYjp2Gg_zM-kOcE1onZZU6XwJiUps-PcXnBauhli0UbxKNuWobGrsSwf3KCuUTzRCVSZXC66QVi-rIU_Ky",
+    "https://fcm.googleapis.com/fcm/send/dBQb2e_0-Io:APA91bFTrsip6C6Pk3RPmsQvzG3jS1qCTG7EYLDbImx2gzp6P7XK5BcvskmNL4AL4saX-rTSyxViY7-eB-HHwlmrlRcoKwuzG17UdyO0vucLkRu5bb1s8Ls1sRENMxwCfBV5AP1-OF_O",
   keys: {
     p256dh:
-      "BFFJhnD7MeDfDrCFUumP8VmsdaZeEtv2VMOtMaBCNWGkvmHvFLz5dX6MTuaTyx1ryt1pokvJss6h5FQg8pABmrM=",
-    auth: "Gw2z245Ogo9zKp+J/EehoA==",
+      "BPbjeYHsAAVuniwlQmwqmITnXBzoFkVGe7sYcwec+RCnTlAoBbr6y/GiKoNE5SqyX+aBZLdgxpdQhsUcMWVFKzg=",
+    auth: "5rBvidms489chB/D94AqAA==",
   },
 };
 
@@ -27,6 +27,7 @@ async function notif(msg) {
     console.log("push errrr!!! ", e);
     const { statusCode, endpoint } = e;
     if (statusCode == 410) {
+      // TODO: Delete endpoint in db
       console.log("delete endpoint");
     }
   }
