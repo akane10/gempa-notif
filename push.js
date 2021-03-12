@@ -25,7 +25,6 @@ async function notif(msg) {
       const val = await getAsync(key);
 
       const x = safelyParseJSON(val);
-      console.log({ x });
       if (x && x.endpoint) {
         const pushSubscription = {
           endpoint: x.endpoint,
