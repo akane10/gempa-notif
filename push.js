@@ -9,15 +9,12 @@ const delAsync = promisify(client.del).bind(client);
 const keysAsync = promisify(client.keys).bind(client);
 
 function safelyParseJSON(json) {
-  let parsed;
-
   try {
-    parsed = JSON.parse(json);
+    const x = JSON.parse(json);
+    return x;
   } catch (e) {
     return null;
   }
-
-  return parsed; // Could be undefined!
 }
 
 async function notif(msg) {
