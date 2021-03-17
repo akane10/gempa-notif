@@ -57,7 +57,7 @@ async function notif(msg) {
       }
     }
   } catch (e) {
-    // console.log("push errrr!!! ", e);
+    // console.log("push errrr!!! ", e.body || e);
     throw Error(e);
   }
 }
