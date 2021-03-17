@@ -45,20 +45,20 @@ async function notif(msg) {
         await webpush
           .sendNotification(pushSubscription, msg, options)
           .catch((e) => {
-            console.log("sendNotification errrr!!! ", e);
+            console.log("sendNotification errrr!!! ", e.body || e);
             const { statusCode, endpoint } = e;
             if (statusCode == 410) {
               delAsync(key);
             } else {
-              throw new Error(e);
+              throw Error(e);
             }
           });
         console.log("pushed", x.endpoint);
       }
     }
   } catch (e) {
-    console.log("push errrr!!! ", e);
-    throw new Error(e);
+    // console.log("push errrr!!! ", e);
+    throw Error(e);
   }
 }
 
