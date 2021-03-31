@@ -53,4 +53,4 @@ async function cron() {
   }
 }
 
-setInterval(cron, 1000);
+setInterval(cron, 3 * 60000);
